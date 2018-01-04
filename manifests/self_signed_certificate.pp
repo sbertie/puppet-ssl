@@ -87,40 +87,26 @@
 # Copyright 2014 Frederik Wagner
 #
 define ssl::self_signed_certificate (
-  $numbits          = '2048',
-  $common_name      = $::fqdn,
-  $email_address    = undef,
-  $country          = undef,
-  $state            = undef,
-  $locality         = undef,
-  $organization     = undef,
-  $unit             = undef,
-  $subject_alt_name = undef,
-  $days             = 365,
-  $directory        = '/etc/ssl',
-  $owner            = root,
-  $group            = root,
-  $check            = false,
-  $check_warn       = undef,
-  $check_crit       = undef,
+  String $check_warn = '3600',
+  String $check_crit = '3600',
+  String $email_address = "root@${::domain}",
+  String $country = 'US',
+  String $state = 'California',
+  String $locality = 'San Francisco',
+  String $organization = 'StartNet',
+  String $unit = 'IT',
+  String $subject_alt_name = "DNS:${::fqdn}",
+  Integer $numbits = 2048,
+  String $common_name = $::fqdn,
+  String $days = '760',
+  String $directory = '/etc/ssl',
+  String $owner = 'root',
+  String $group = 'root',
+  Boolean $check = false,
 ) {
-
   if ! is_domain_name($common_name) {
     fail('$common_name must be a domain name!')
   }
-  validate_string($email_address)
-  validate_re($country,'^(|[a-zA-Z]{2})$')
-  validate_string($state)
-  validate_string($locality)
-  validate_string($organization)
-  validate_string($unit)
-  validate_string($subject_alt_name)
-  validate_re($days,'^\d+$')
-  validate_absolute_path($directory)
-  validate_string($owner)
-  validate_string($group)
-  validate_bool($check)
-  # no need to validet $check_* here
 
   include ssl::install
 
